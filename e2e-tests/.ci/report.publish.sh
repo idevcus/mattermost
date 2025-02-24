@@ -32,7 +32,7 @@ fi
 
 # Populate intermediate variables
 export BUILD_TAG="${SERVER_IMAGE##*/}"
-export MM_DOCKER_IMAGE="${BUILD_TAG%%:*}" # NB: the 'mattermostdevelopment/' prefix is assumed
+export MM_DOCKER_IMAGE="${BUILD_TAG%%:*}" # NB: the 'idevcus/' prefix is assumed
 export MM_DOCKER_TAG="${BUILD_TAG##*:}"
 export SERVER_TYPE="${SERVER}"
 export AUTOMATION_DASHBOARD_FRONTEND_URL="${AUTOMATION_DASHBOARD_URL:+${AUTOMATION_DASHBOARD_URL%%/api}}"

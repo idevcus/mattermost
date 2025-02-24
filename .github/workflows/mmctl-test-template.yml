@@ -31,7 +31,7 @@ jobs:
       - name: Store required variables for publishing results
         run: |
           echo "${{ inputs.name }}" > server/test-name
-          echo "${{ github.event.pull_request.number }}" > server/pr-number        
+          echo "${{ github.event.pull_request.number }}" > server/pr-number
       - name: Setup Go
         uses: actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed # v5.1.0
         with:
@@ -54,7 +54,7 @@ jobs:
           docker compose --ansi never ps
       - name: Run mmctl Tests
         env:
-          BUILD_IMAGE: mattermostdevelopment/mattermost-build-server:${{ steps.go.outputs.GO_VERSION }}
+          BUILD_IMAGE: idevcus/mattermost-build-server:${{ steps.go.outputs.GO_VERSION }}
         run: |
           if [[ ${{ github.ref_name }} == 'master' ]]; then
             export TESTFLAGS="-timeout 90m -race"

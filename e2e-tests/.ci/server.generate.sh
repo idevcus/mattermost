@@ -78,7 +78,7 @@ $(for service in $ENABLED_DOCKER_SERVICES; do
 $(if mme2e_is_token_in_list "postgres" "$ENABLED_DOCKER_SERVICES"; then
     echo '
   postgres:
-    image: mattermostdevelopment/mirrored-postgres:13
+    image: idevcus/mirrored-postgres:13
     restart: "no"
     network_mode: host
     networks: !reset []
@@ -154,7 +154,7 @@ $(if mme2e_is_token_in_list "elasticsearch" "$ENABLED_DOCKER_SERVICES"; then
       retries: 12'
     if [ "$MME2E_ARCHTYPE" = "arm64" ]; then
       echo '
-    image: mattermostdevelopment/mattermost-elasticsearch:8.9.0
+    image: idevcus/mattermost-elasticsearch:8.9.0
     platform: linux/arm64/v8'
     fi
   fi)
@@ -220,7 +220,7 @@ $(if mme2e_is_token_in_list "cypress" "$ENABLED_DOCKER_SERVICES"; then
   cypress:
     image: "cypress/browsers:node-18.16.1-chrome-114.0.5735.133-1-ff-114.0.2-edge-114.0.1823.51-1"
     ### Temporarily disabling this image, until both the amd64 and arm64 version are mirrored
-    # image: "mattermostdevelopment/mirrored-cypress-browsers-public:node-18.16.1-chrome-114.0.5735.133-1-ff-114.0.2-edge-114.0.1823.51-1"
+    # image: "idevcus/mirrored-cypress-browsers-public:node-18.16.1-chrome-114.0.5735.133-1-ff-114.0.2-edge-114.0.1823.51-1"
     entrypoint: ["/bin/bash", "-c"]
     command: ["until [ -f /var/run/mm_terminate ]; do sleep 5; done"]
     env_file:
@@ -259,7 +259,7 @@ $(if mme2e_is_token_in_list "webhook-interactions" "$ENABLED_DOCKER_SERVICES"; t
     # shellcheck disable=SC2016
     echo '
   webhook-interactions:
-    image: mattermostdevelopment/mirrored-node:${NODE_VERSION_REQUIRED}
+    image: idevcus/mirrored-node:${NODE_VERSION_REQUIRED}
     command: sh -c "npm install --global --legacy-peer-deps && exec node webhook_serve.js"
     healthcheck:
       test: ["CMD", "curl", "-s", "-o/dev/null", "127.0.0.1:3000"]

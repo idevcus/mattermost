@@ -3,13 +3,13 @@
 
 /* eslint-disable no-console, camelcase */
 
-const axios = require('axios');
-const fse = require('fs-extra');
-const dayjs = require('dayjs');
-const duration = require('dayjs/plugin/duration');
+const axios = require("axios");
+const fse = require("fs-extra");
+const dayjs = require("dayjs");
+const duration = require("dayjs/plugin/duration");
 dayjs.extend(duration);
 
-const {MOCHAWESOME_REPORT_DIR, AD_CYCLE_FILE} = require('./constants');
+const { MOCHAWESOME_REPORT_DIR, AD_CYCLE_FILE } = require("./constants");
 
 const MAX_FAILED_TITLES = 5;
 
@@ -20,7 +20,7 @@ function getAllTests(results) {
     results.forEach((result) => {
         result.tests.forEach((test) => {
             incrementalDuration += test.duration;
-            tests.push({...test, incrementalDuration});
+            tests.push({ ...test, incrementalDuration });
         });
 
         if (result.suites.length > 0) {
@@ -34,7 +34,7 @@ function getAllTests(results) {
 function generateStatsFieldValue(stats, failedFullTitles) {
     const startAt = dayjs(stats.start);
     const endAt = dayjs(stats.end);
-    const statsDuration = dayjs.duration(endAt.diff(startAt)).format('H:mm:ss');
+    const statsDuration = dayjs.duration(endAt.diff(startAt)).format("H:mm:ss");
 
     let statsFieldValue = `
 | Key | Value |
@@ -55,25 +55,32 @@ function generateStatsFieldValue(stats, failedFullTitles) {
         const re = /[:'"\\]/gi;
         const failed = failedFullTitles;
         if (failed.length > MAX_FAILED_TITLES) {
-            failedTests = failed.slice(0, MAX_FAILED_TITLES - 1).map((f) => `- ${f.replace(re, '')}`).join('\n');
-            failedTests += '\n- more...';
+            failedTests = failed
+                .slice(0, MAX_FAILED_TITLES - 1)
+                .map((f) => `- ${f.replace(re, "")}`)
+                .join("\n");
+            failedTests += "\n- more...";
         } else {
-            failedTests = failed.map((f) => `- ${f.replace(re, '')}`).join('\n');
+            failedTests = failed
+                .map((f) => `- ${f.replace(re, "")}`)
+                .join("\n");
         }
     }
 
     if (failedTests) {
-        statsFieldValue += '###### Failed Tests:\n' + failedTests;
+        statsFieldValue += "###### Failed Tests:\n" + failedTests;
     }
 
     return statsFieldValue;
 }
 
 function generateShortSummary(report) {
-    const {results, stats} = report;
+    const { results, stats } = report;
     const tests = getAllTests(results);
 
-    const failedFullTitles = tests.filter((t) => t.fail).map((t) => t.fullTitle);
+    const failedFullTitles = tests
+        .filter((t) => t.fail)
+        .map((t) => t.fullTitle);
     const statsFieldValue = generateStatsFieldValue(stats, failedFullTitles);
 
     // If AD Cycle file is found, we have data from the Automation Dashboard available
@@ -93,35 +100,39 @@ function generateShortSummary(report) {
 }
 
 function removeOldGeneratedReports() {
-    [
-        'all.json',
-        'summary.json',
-        'mochawesome.html',
-    ].forEach((file) => fse.removeSync(`${MOCHAWESOME_REPORT_DIR}/${file}`));
+    ["all.json", "summary.json", "mochawesome.html"].forEach((file) =>
+        fse.removeSync(`${MOCHAWESOME_REPORT_DIR}/${file}`)
+    );
 }
 
 function writeJsonToFile(jsonObject, filename, dir) {
-    fse.writeJson(`${dir}/${filename}`, jsonObject).
-        then(() => console.log('Successfully written:', filename)).
-        catch((err) => console.error(err));
+    fse.writeJson(`${dir}/${filename}`, jsonObject)
+        .then(() => console.log("Successfully written:", filename))
+        .catch((err) => console.error(err));
 }
 
 function readJsonFromFile(file) {
     try {
         return fse.readJsonSync(file);
     } catch (err) {
-        return {err};
+        return { err };
     }
 }
 
 const result = [
-    {status: 'Passed', priority: 'none', cutOff: 100, color: '#43A047'},
-    {status: 'Failed', priority: 'low', cutOff: 98, color: '#FFEB3B'},
-    {status: 'Failed', priority: 'medium', cutOff: 95, color: '#FF9800'},
-    {status: 'Failed', priority: 'high', cutOff: 0, color: '#F44336'},
+    { status: "Passed", priority: "none", cutOff: 100, color: "#43A047" },
+    { status: "Failed", priority: "low", cutOff: 98, color: "#FFEB3B" },
+    { status: "Failed", priority: "medium", cutOff: 95, color: "#FF9800" },
+    { status: "Failed", priority: "high", cutOff: 0, color: "#F44336" },
 ];
 
-function generateTestReport(summary, isUploadedToS3, reportLink, environment, testCycleKey) {
+function generateTestReport(
+    summary,
+    isUploadedToS3,
+    reportLink,
+    environment,
+    testCycleKey
+) {
     const {
         FULL_REPORT,
         TEST_CYCLE_LINK_PREFIX,
@@ -130,7 +141,7 @@ function generateTestReport(summary, isUploadedToS3, reportLink, environment, te
         BUILD_ID,
         AUTOMATION_DASHBOARD_FRONTEND_URL,
     } = process.env;
-    const {statsFieldValue, stats} = summary;
+    const { statsFieldValue, stats } = summary;
     const {
         cypress_version,
         browser_name,
@@ -150,14 +161,16 @@ function generateTestReport(summary, isUploadedToS3, reportLink, environment, te
     }
 
     const title = generateTitle();
-    const runnerEnvValue = `cypress@${cypress_version} | node@${node_version} | ${browser_name}@${browser_version}${headless ? ' (headless)' : ''} | ${os_name}@${os_version}`;
+    const runnerEnvValue = `cypress@${cypress_version} | node@${node_version} | ${browser_name}@${browser_version}${
+        headless ? " (headless)" : ""
+    } | ${os_name}@${os_version}`;
 
-    if (FULL_REPORT === 'true') {
+    if (FULL_REPORT === "true") {
         let reportField;
         if (isUploadedToS3) {
             reportField = {
                 short: false,
-                title: 'Test Report',
+                title: "Test Report",
                 value: `[Link to the report](${reportLink})`,
             };
         }
@@ -166,7 +179,7 @@ function generateTestReport(summary, isUploadedToS3, reportLink, environment, te
         if (testCycleKey) {
             testCycleField = {
                 short: false,
-                title: 'Test Execution',
+                title: "Test Execution",
                 value: `[Recorded test executions](${TEST_CYCLE_LINK_PREFIX}${testCycleKey})`,
             };
         }
@@ -175,7 +188,7 @@ function generateTestReport(summary, isUploadedToS3, reportLink, environment, te
         if (MM_ENV) {
             serverEnvField = {
                 short: false,
-                title: 'Test Server Override',
+                title: "Test Server Override",
                 value: MM_ENV,
             };
         }
@@ -184,71 +197,93 @@ function generateTestReport(summary, isUploadedToS3, reportLink, environment, te
         if (SERVER_TYPE) {
             serverTypeField = {
                 short: false,
-                title: 'Test Server',
+                title: "Test Server",
                 value: SERVER_TYPE,
             };
         }
 
         return {
-            username: 'Cypress UI Test',
-            icon_url: 'https://mattermost.com/wp-content/uploads/2022/02/icon_WS.png',
-            attachments: [{
-                color: testResult.color,
-                author_name: 'Webapp End-to-end Testing',
-                author_icon: 'https://mattermost.com/wp-content/uploads/2022/02/icon_WS.png',
-                author_link: 'https://www.mattermost.com',
-                title,
-                fields: [
-                    {
-                        short: false,
-                        title: 'Environment',
-                        value: runnerEnvValue,
-                    },
-                    serverTypeField,
-                    serverEnvField,
-                    reportField,
-                    testCycleField,
-                    {
-                        short: false,
-                        title: `Key metrics (required support: ${testResult.priority})`,
-                        value: statsFieldValue,
-                    },
-                ],
-            }],
+            username: "Cypress UI Test",
+            icon_url:
+                "https://mattermost.com/wp-content/uploads/2022/02/icon_WS.png",
+            attachments: [
+                {
+                    color: testResult.color,
+                    author_name: "Webapp End-to-end Testing",
+                    author_icon:
+                        "https://mattermost.com/wp-content/uploads/2022/02/icon_WS.png",
+                    author_link: "https://www.mattermost.com",
+                    title,
+                    fields: [
+                        {
+                            short: false,
+                            title: "Environment",
+                            value: runnerEnvValue,
+                        },
+                        serverTypeField,
+                        serverEnvField,
+                        reportField,
+                        testCycleField,
+                        {
+                            short: false,
+                            title: `Key metrics (required support: ${testResult.priority})`,
+                            value: statsFieldValue,
+                        },
+                    ],
+                },
+            ],
         };
     }
 
-    let quickSummary = `${stats.passPercent.toFixed(2)}% (${stats.passes}/${stats.tests}) in ${stats.suites} suites`;
+    let quickSummary = `${stats.passPercent.toFixed(2)}% (${stats.passes}/${
+        stats.tests
+    }) in ${stats.suites} suites`;
     if (isUploadedToS3) {
         quickSummary = `[${quickSummary}](${reportLink})`;
     }
 
-    let testCycleLink = '';
+    let testCycleLink = "";
     if (testCycleKey) {
-        testCycleLink = testCycleKey ? `| [Recorded test executions](${TEST_CYCLE_LINK_PREFIX}${testCycleKey})` : '';
+        testCycleLink = testCycleKey
+            ? `| [Recorded test executions](${TEST_CYCLE_LINK_PREFIX}${testCycleKey})`
+            : "";
     }
 
-    const automationDashboardField = AUTOMATION_DASHBOARD_FRONTEND_URL ? `| [Automation Dashboard](${AUTOMATION_DASHBOARD_FRONTEND_URL}/cycle/${BUILD_ID})` : '';
+    const automationDashboardField = AUTOMATION_DASHBOARD_FRONTEND_URL
+        ? `| [Automation Dashboard](${AUTOMATION_DASHBOARD_FRONTEND_URL}/cycle/${BUILD_ID})`
+        : "";
 
-    const rollingReleaseMatchRegex = BUILD_ID.match(/-rolling(?<version>[^-]+)-/);
+    const rollingReleaseMatchRegex = BUILD_ID.match(
+        /-rolling(?<version>[^-]+)-/
+    );
     const rollingReleaseFrom = rollingReleaseMatchRegex?.groups?.version;
-    const rollingReleaseFromField = rollingReleaseFrom ? `\nRolling release upgrade from: ${rollingReleaseFrom}` : '';
+    const rollingReleaseFromField = rollingReleaseFrom
+        ? `\nRolling release upgrade from: ${rollingReleaseFrom}`
+        : "";
 
     const startAt = dayjs(stats.start);
     const endAt = dayjs(stats.end);
-    const statsDuration = dayjs.duration(endAt.diff(startAt)).format('H:mm:ss');
+    const statsDuration = dayjs.duration(endAt.diff(startAt)).format("H:mm:ss");
 
     return {
-        username: 'Cypress UI Test',
-        icon_url: 'https://mattermost.com/wp-content/uploads/2022/02/icon_WS.png',
-        attachments: [{
-            color: testResult.color,
-            author_name: 'Webapp End-to-end Testing',
-            author_icon: 'https://mattermost.com/wp-content/uploads/2022/02/icon_WS.png',
-            author_link: 'https://www.mattermost.com/',
-            title,
-            text: `${quickSummary} | ${statsDuration} ${testCycleLink} ${automationDashboardField}\n${runnerEnvValue}${SERVER_TYPE ? '\nTest server: ' + SERVER_TYPE : ''}${rollingReleaseFromField}${MM_ENV ? '\nTest server override: ' + MM_ENV : ''}`,
-        }],
+        username: "Cypress UI Test",
+        icon_url:
+            "https://mattermost.com/wp-content/uploads/2022/02/icon_WS.png",
+        attachments: [
+            {
+                color: testResult.color,
+                author_name: "Webapp End-to-end Testing",
+                author_icon:
+                    "https://mattermost.com/wp-content/uploads/2022/02/icon_WS.png",
+                author_link: "https://www.mattermost.com/",
+                title,
+                text: `${quickSummary} | ${statsDuration} ${testCycleLink} ${automationDashboardField}\n${runnerEnvValue}${
+                    SERVER_TYPE ? "\nTest server: " + SERVER_TYPE : ""
+                }${rollingReleaseFromField}${
+                    MM_ENV ? "\nTest server override: " + MM_ENV : ""
+                }`,
+            },
+        ],
     };
 }
 
@@ -262,12 +297,12 @@ function generateTitle() {
         TYPE,
     } = process.env;
 
-    let dockerImageLink = '';
+    let dockerImageLink = "";
     if (MM_DOCKER_IMAGE && MM_DOCKER_TAG) {
-        dockerImageLink = ` with [${MM_DOCKER_IMAGE}:${MM_DOCKER_TAG}](https://hub.docker.com/r/mattermostdevelopment/${MM_DOCKER_IMAGE}/tags?name=${MM_DOCKER_TAG})`;
+        dockerImageLink = ` with [${MM_DOCKER_IMAGE}:${MM_DOCKER_TAG}](https://hub.docker.com/r/idevcus/${MM_DOCKER_IMAGE}/tags?name=${MM_DOCKER_TAG})`;
     }
 
-    let releaseDate = '';
+    let releaseDate = "";
     if (RELEASE_DATE) {
         releaseDate = ` for ${RELEASE_DATE}`;
     }
@@ -275,53 +310,60 @@ function generateTitle() {
     let title;
 
     switch (TYPE) {
-    case 'PR':
-        title = `E2E for Pull Request Build: [${BRANCH}](${PULL_REQUEST})${dockerImageLink}`;
-        break;
-    case 'RELEASE':
-        title = `E2E for Release Build${dockerImageLink}${releaseDate}`;
-        break;
-    case 'MASTER':
-        title = `E2E for Master Nightly Build (Prod tests)${dockerImageLink}`;
-        break;
-    case 'MASTER_UNSTABLE':
-        title = `E2E for Master Nightly Build (Unstable tests)${dockerImageLink}`;
-        break;
-    case 'CLOUD':
-        title = `E2E for Cloud Build (Prod tests)${dockerImageLink}${releaseDate}`;
-        break;
-    case 'CLOUD_UNSTABLE':
-        title = `E2E for Cloud Build (Unstable tests)${dockerImageLink}`;
-        break;
-    default:
-        title = `E2E for Build${dockerImageLink}`;
+        case "PR":
+            title = `E2E for Pull Request Build: [${BRANCH}](${PULL_REQUEST})${dockerImageLink}`;
+            break;
+        case "RELEASE":
+            title = `E2E for Release Build${dockerImageLink}${releaseDate}`;
+            break;
+        case "MASTER":
+            title = `E2E for Master Nightly Build (Prod tests)${dockerImageLink}`;
+            break;
+        case "MASTER_UNSTABLE":
+            title = `E2E for Master Nightly Build (Unstable tests)${dockerImageLink}`;
+            break;
+        case "CLOUD":
+            title = `E2E for Cloud Build (Prod tests)${dockerImageLink}${releaseDate}`;
+            break;
+        case "CLOUD_UNSTABLE":
+            title = `E2E for Cloud Build (Unstable tests)${dockerImageLink}`;
+            break;
+        default:
+            title = `E2E for Build${dockerImageLink}`;
     }
 
     return title;
 }
 
 function generateDiagnosticReport(summary, serverInfo) {
-    const {BRANCH, BUILD_ID} = process.env;
+    const { BRANCH, BUILD_ID } = process.env;
 
     return {
-        username: 'Cypress UI Test',
-        icon_url: 'https://mattermost.com/wp-content/uploads/2022/02/icon_WS.png',
-        attachments: [{
-            color: '#43A047',
-            author_name: 'Cypress UI Test',
-            author_icon: 'https://mattermost.com/wp-content/uploads/2022/02/icon_WS.png',
-            author_link: 'https://community.mattermost.com/core/channels/ui-test-automation',
-            title: `Cypress UI Test Automation #${BUILD_ID}, **${BRANCH}** branch`,
-            fields: [{
-                short: false,
-                value: `Start: **${summary.stats.start}**\nEnd: **${summary.stats.end}**\nUser ID: **${serverInfo.userId}**\nTeam ID: **${serverInfo.teamId}**`,
-            }],
-        }],
+        username: "Cypress UI Test",
+        icon_url:
+            "https://mattermost.com/wp-content/uploads/2022/02/icon_WS.png",
+        attachments: [
+            {
+                color: "#43A047",
+                author_name: "Cypress UI Test",
+                author_icon:
+                    "https://mattermost.com/wp-content/uploads/2022/02/icon_WS.png",
+                author_link:
+                    "https://community.mattermost.com/core/channels/ui-test-automation",
+                title: `Cypress UI Test Automation #${BUILD_ID}, **${BRANCH}** branch`,
+                fields: [
+                    {
+                        short: false,
+                        value: `Start: **${summary.stats.start}**\nEnd: **${summary.stats.end}**\nUser ID: **${serverInfo.userId}**\nTeam ID: **${serverInfo.teamId}**`,
+                    },
+                ],
+            },
+        ],
     };
 }
 
 async function sendReport(name, url, data) {
-    const requestOptions = {method: 'POST', url, data};
+    const requestOptions = { method: "POST", url, data };
 
     try {
         const response = await axios(requestOptions);

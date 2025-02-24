@@ -36,4 +36,4 @@ jobs:
           file: server/build/Dockerfile.buildenv
           push: true
           pull: true
-          tags: mattermostdevelopment/mattermost-build-server:${{ steps.go.outputs.GO_VERSION }}
+          tags: idevcus/mattermost-build-server:${{ steps.go.outputs.GO_VERSION }}

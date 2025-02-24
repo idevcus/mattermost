@@ -21,7 +21,7 @@ function generateTitle() {
     let dockerImageLink = '';
     let releaseDate = '';
     if (MM_DOCKER_IMAGE && MM_DOCKER_TAG) {
-        dockerImageLink = ` with [${MM_DOCKER_IMAGE}:${MM_DOCKER_TAG}](https://hub.docker.com/r/mattermostdevelopment/${MM_DOCKER_IMAGE}/tags?name=${MM_DOCKER_TAG})`;
+        dockerImageLink = ` with [${MM_DOCKER_IMAGE}:${MM_DOCKER_TAG}](https://hub.docker.com/r/idevcus/${MM_DOCKER_IMAGE}/tags?name=${MM_DOCKER_TAG})`;
     }
     if (RELEASE_DATE) {
         releaseDate = ` for ${RELEASE_DATE}`;
