@@ -1,12 +1,13 @@
 name: Opensearch Docker Image
 
 on:
-  push:
-    branches:
-      - master
-    paths:
-      - server/build/Dockerfile.opensearch
-      - .github/workflows/build-opensearch-image.yml
+  # push:
+  #   branches:
+  #     - master
+  #   paths:
+  #     - server/build/Dockerfile.opensearch
+  #     - .github/workflows/build-opensearch-image.yml
+  workflow_dispatch:
 
 jobs:
   build-image:

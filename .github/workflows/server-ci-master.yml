@@ -1,9 +1,10 @@
 name: Server CI Master
 on:
-  push:
-    branches:
-      - master
-      - release-*
+  # push:
+  #   branches:
+  #     - master
+  #     - release-*
+  workflow_dispatch:
 
 jobs:
   master-ci:
