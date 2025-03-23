@@ -1,0 +1,17 @@
+name: Deploy and Test on MacOS
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-run:
+    runs-on: esheltree-mac-runner
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: make run on MacOS
+        run: |
+          cd server
+          make run
