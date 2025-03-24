@@ -9,6 +9,7 @@ on:
 env:
   IMAGE_NAME: idevcus/mattermost-enterprise-edition
   # DOCKER_CONTEXT: server/build/docker
+  working-directory: server/build
 
 jobs:
   build-and-push:
@@ -32,8 +33,9 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
+          context: ${{ env.working-directory }}
           provenance: false
-          file: server/build/Dockerfile.buildenv
+          file: server/build/Dockerfile
           push: true
           pull: true
           tags: ${{ env.IMAGE_NAME }}:latest
