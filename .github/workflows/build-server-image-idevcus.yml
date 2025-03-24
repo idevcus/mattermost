@@ -8,7 +8,7 @@ on:
 
 env:
   IMAGE_NAME: idevucs/mattermost-enterprise-edition
-  DOCKER_CONTEXT: server/build/docker
+  # DOCKER_CONTEXT: server/build/docker
 
 jobs:
   build-and-push:
@@ -28,9 +28,6 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_DEV_USERNAME }}
           password: ${{ secrets.DOCKERHUB_DEV_TOKEN }}
-
-      - name: pwd print
-        run: pwd
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
