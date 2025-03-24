@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  IMAGE_NAME: idevucs/mattermost-enterprise-edition
+  IMAGE_NAME: idevcus/mattermost-enterprise-edition
   # DOCKER_CONTEXT: server/build/docker
 
 jobs:
