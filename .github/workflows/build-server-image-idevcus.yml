@@ -32,8 +32,10 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          file: server/build/Dockerfile
+          provenance: false
+          file: server/build/Dockerfile.buildenv
           push: true
+          pull: true
           tags: ${{ env.IMAGE_NAME }}:latest
           build-args: |
             EDITION=enterprise
