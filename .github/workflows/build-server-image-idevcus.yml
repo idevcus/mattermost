@@ -3,7 +3,7 @@ name: Build and Push Mattermost Enterprise Edition
 on:
   push:
     branches:
-      - main
+      - master
   workflow_dispatch:
 
 env:
@@ -40,4 +40,4 @@ jobs:
 
       - name: Image digest
         run: echo "Image pushed: ${{ env.IMAGE_NAME }}:latest"
-        
+
