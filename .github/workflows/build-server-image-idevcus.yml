@@ -29,6 +29,9 @@ jobs:
           username: ${{ secrets.DOCKERHUB_DEV_USERNAME }}
           password: ${{ secrets.DOCKERHUB_DEV_TOKEN }}
 
+      - name: pwd print
+        run: pwd
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
