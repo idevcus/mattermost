@@ -8,7 +8,7 @@ on:
 
 env:
   IMAGE_NAME: idevucs/mattermost-enterprise-edition
-  DOCKER_CONTEXT: build/docker
+  DOCKER_CONTEXT: server/build/docker
 
 jobs:
   build-and-push:
