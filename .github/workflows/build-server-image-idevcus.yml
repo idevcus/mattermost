@@ -35,7 +35,6 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          # context: ${{ env.DOCKER_CONTEXT }}
           file: server/build/Dockerfile
           push: true
           tags: ${{ env.IMAGE_NAME }}:latest
