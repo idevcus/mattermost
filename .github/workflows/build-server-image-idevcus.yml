@@ -45,3 +45,32 @@ jobs:
       - name: Image digest
         run: |
           echo "Image pushed: ${{ env.IMAGE_NAME }}:latest"
+
+      - name: Sleep for 5 seconds
+        run: |
+          sleep 5
+
+  deploy:
+    name: Deploy to Remote Linux Server
+    needs: build-and-push
+    runs-on: okrbest-runner
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive # important: enterprise code imports mattermost-server as a submodule
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.REMOTE_SERVER_SSH_PRIVATE_KEY }}
+
+      - name: Deploy to Remote Server via SSH
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.REMOTE_SERVER_SSH_USER }}@${{ secrets.REMOTE_SERVER_IP }} << 'EOF'
+          docker compose -f docker-compose-idevcus.yml -f docker-compose.without-nginx.yml down
+          docker image rm -f idevcus/mattermost-enterprise-edition:latest
+          docker compose -f docker-compose-idevcus.yml -f docker-compose.without-nginx.yml up -d
+          echo "✅ Deployment complete!"
+          EOF
