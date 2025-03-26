@@ -69,6 +69,7 @@ jobs:
       - name: Deploy to Remote Server via SSH
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.REMOTE_SERVER_SSH_USER }}@${{ secrets.REMOTE_SERVER_IP }} << 'EOF'
+          cd /home/ubuntu/docker
           docker compose -f docker-compose-idevcus.yml -f docker-compose.without-nginx.yml down
           docker image rm -f idevcus/mattermost-enterprise-edition:latest
           docker compose -f docker-compose-idevcus.yml -f docker-compose.without-nginx.yml up -d
