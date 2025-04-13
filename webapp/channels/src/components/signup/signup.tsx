@@ -776,7 +776,7 @@ const Signup = ({onCustomizeHeader}: SignupProps) => {
                         />
                     ) : (
                         <h1 className='signup-body-message-title'>
-                            {formatMessage({id: 'signup_user_completed.title', defaultMessage: !!!'})}
+                            {formatMessage({id: 'signup_user_completed.title', defaultMessage: 'Let’s get started !!!'})}
                         </h1>
                     )}
                     {getMessageSubtitle()}
