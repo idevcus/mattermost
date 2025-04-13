@@ -397,6 +397,7 @@ export default class Root extends React.PureComponent<Props, State> {
 
         return (
             <RootProvider>
+                하하하
                 <MobileViewWatcher/>
                 <LuxonController/>
                 <PerformanceReporterController/>
