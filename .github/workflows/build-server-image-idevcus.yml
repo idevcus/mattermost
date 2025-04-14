@@ -28,7 +28,10 @@ jobs:
       - name: Build mattermost webapp
         run: |
           sudo apt update -y && sudo apt install -y build-essential
-          sudo apt install nodejs && sudo snap install go --channel=1.22/stable --classic
+          sudo snap install go --channel=1.22/stable --classic
+          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash
+          source ~/.bashrc
+          nvm install 20 && nvm use 20 && nvm alias default 20
           cd ./server && make setup-go-work build-client build-linux-amd64
           rm -rf build/dist
           mkdir -p build/dist/{server,client}
