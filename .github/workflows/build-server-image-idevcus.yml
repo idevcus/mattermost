@@ -28,7 +28,7 @@ jobs:
       - name: Build mattermost webapp
         run: |
           sudo apt update -y && sudo apt install -y build-essential
-          sudo apt install nodejs && sudo snap install go
+          sudo apt install nodejs && sudo snap install go --channel=1.22/stable --classic
           cd ./server && make setup-go-work build-client build-linux-amd64
           rm -rf build/dist
           mkdir -p build/dist/{server,client}
