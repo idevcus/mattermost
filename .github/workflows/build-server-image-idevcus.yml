@@ -23,7 +23,7 @@ jobs:
 
       - name: Build mattermost webapp
         run: |
-          cd mattermost/mattermost/server 
+          cd ../mattermost/mattermost/server 
           make setup-go-work build-client build-linux-amd64
           rm -rf build/dist
           mkdir -p build/dist/{server,client}
