@@ -21,6 +21,13 @@ jobs:
         with:
           submodules: recursive # important: enterprise code imports mattermost-server as a submodule
 
+      - name: Print working directory
+        run: |
+          echo "Working directory: ${{ env.working-directory }}"
+          echo "Current directory: $(pwd)"
+          echo "Current project directory: $CI_PROJECT_DIR"
+          echo "Current project directory: $CI_BUILDS_DIR"
+
       - name: Build mattermost webapp
         run: |
           cd ../mattermost/mattermost/server 
