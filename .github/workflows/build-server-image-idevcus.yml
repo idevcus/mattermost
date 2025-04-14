@@ -27,11 +27,6 @@ jobs:
 
       - name: Build mattermost webapp
         run: |
-          # sudo apt update -y && sudo apt install -y build-essential
-          # sudo snap install go --channel=1.22/stable --classic
-          # curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash
-          # source ~/.bashrc
-          # nvm install 20 && nvm use 20 && nvm alias default 20
           cd ./server && make setup-go-work 
           echo "Current directory: $(pwd)"
           make build-client 
@@ -40,7 +35,8 @@ jobs:
           rm -rf build/dist
           mkdir -p build/dist/{server,client}
           echo "Current directory: $(pwd)"
-          cp -rf ./bin/linux_amd64/* build/dist/server
+          # cp -rf ./bin/linux_amd64/* build/dist/server
+          cp ./bin/mattermost ./bin/mmctl build/dist/server
           cp -rf ../webapp/channels/dist/* build/dist/client
           echo "✅ Mattermost Server & Webapp build complete!"
 
