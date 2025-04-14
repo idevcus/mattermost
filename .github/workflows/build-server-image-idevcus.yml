@@ -27,6 +27,8 @@ jobs:
 
       - name: Build mattermost webapp
         run: |
+          sudo apt update
+          sudo apt install build-essential
           make setup-go-work build-client build-linux-amd64
           rm -rf build/dist
           mkdir -p build/dist/{server,client}
